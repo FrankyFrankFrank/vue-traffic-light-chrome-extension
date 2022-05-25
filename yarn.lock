@@ -5763,6 +5763,11 @@ vary@~1.1.2:
   resolved "https://registry.yarnpkg.com/vary/-/vary-1.1.2.tgz#2299f02c6ded30d4a5961b0b9f74524a18f634fc"
   integrity sha1-IpnwLG3tMNSllhsLn3RSShj2NPw=
 
+vue-cli-plugin-chrome-extension-cli@~1.1.4:
+  version "1.1.4"
+  resolved "https://registry.yarnpkg.com/vue-cli-plugin-chrome-extension-cli/-/vue-cli-plugin-chrome-extension-cli-1.1.4.tgz#3edc74c7b650c3961f0417b1f94bedfe620cbab5"
+  integrity sha512-Ij6tVvjju5vz+2N31Drkcsr6VBsZYlwsWiHWL8zeRfN5sIdl/+o8uK1AnV0EfmFTUXB7nM9XYWb9m8nm8feP6Q==
+
 vue-eslint-parser@^8.0.1:
   version "8.3.0"
   resolved "https://registry.yarnpkg.com/vue-eslint-parser/-/vue-eslint-parser-8.3.0.tgz#5d31129a1b3dd89c0069ca0a1c88f970c360bd0d"
