@@ -1,19 +1,22 @@
 <template>
   <div class="main_app">
     <h1>Hello {{ msg }}</h1>
-    <button @click="foo">Foo</button>
+    <label for="team-name">Team Name</label>
+    <input type="text" id="team-name" v-model="teamName">
+    <button @click="foo">Get {{ teamName }}</button>
   </div>
 </template>
 
 <script>
 import { initializeApp } from "firebase/app";
-import { getFirestore, getDocs, collection } from "firebase/firestore";
+import { getFirestore, getDoc, doc } from "firebase/firestore";
 
 export default {
   name: 'popupView',
   data() {
     return {
-      msg: 'popup'
+      msg: 'popup',
+      teamName: null,
     }
   },
   methods: {
@@ -29,13 +32,11 @@ export default {
       };
       const app = initializeApp(firebaseConfig);
       const db = getFirestore(app);
+      const teamRef = doc(db, "teams", this.teamName)
+      const teamSnap = await getDoc(teamRef);
 
-      const querySnapshot = await getDocs(collection(db, "teams"));
-      querySnapshot.forEach((doc) => {
-        const data = doc.data()
-        this.msg = data.teamName
-        console.log(`${doc.id} => ${doc.data()}`);
-      });
+      const data = teamSnap.data()
+      this.msg = data.names[0]
     }
   }
 }
