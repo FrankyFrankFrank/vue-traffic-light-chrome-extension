@@ -17,21 +17,23 @@ export default {
     }
   },
   methods: {
-    foo: async () => {
+    async foo() {
       const firebaseConfig = {
-        apiKey: process.env.APIKEY,
-        authDomain: process.env.AUTHDOMAIN,
-        projectId: process.env.PROJECTID,
-        storageBucket: process.env.STORAGEBUCKET,
-        messagingSenderId: process.env.MESSAGINGSENDERID,
-        appId: process.env.APPID,
-        measurementId: process.env.MEASUREMENTID,
+        apiKey: process.env.VUE_APP_APIKEY,
+        authDomain: process.env.VUE_APP_AUTHDOMAIN,
+        projectId: process.env.VUE_APP_PROJECTID,
+        storageBucket: process.env.VUE_APP_STORAGEBUCKET,
+        messagingSenderId: process.env.VUE_APP_MESSAGINGSENDERID,
+        appId: process.env.VUE_APP_APPID,
+        measurementId: process.env.VUE_APP_MEASUREMENTID,
       };
       const app = initializeApp(firebaseConfig);
       const db = getFirestore(app);
 
       const querySnapshot = await getDocs(collection(db, "teams"));
       querySnapshot.forEach((doc) => {
+        const data = doc.data()
+        this.msg = data.teamName
         console.log(`${doc.id} => ${doc.data()}`);
       });
     }
