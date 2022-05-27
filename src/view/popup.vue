@@ -1,27 +1,47 @@
 <template>
-  <div class="main_app">
+  <div class="p-4 w-72">
     <div v-if="!loadedTeam">
-      <h1>Find a team</h1>
-      <label for="team-name">Team Name</label>
-      <input type="text" id="team-name" v-model="teamName" />
-      <button @click="loadTeam">Get {{ teamName }}</button>
+      <h1 class="text-lg uppercase font-bold tracking-widest">Find a team</h1>
+
+      <label for="team-name" class="w-full uppercase tracking-widest">Team Name</label>
+      <input type="text" id="team-name" v-model="teamName" class="border w-full mb-2 px-2 py-1 mr-1" />
+      <button @click="loadTeam" :disabled="!teamName"
+        class="w-full px-2 py-1 bg-stone-500 text-stone-100 uppercase tracking-widest font-bold">
+        {{ teamName ? `Join Team ${teamName}` : 'Enter Team Name' }}
+      </button>
     </div>
 
     <div v-if="loadedTeam">
-      <h1>Team {{ loadedTeam }}</h1>
-      <div v-for="member in teamMembers" :key="member">
-        <p>{{ member.name }}</p>
-        <p>{{ member.color }}</p>
-        <button @click="setColor(member.id, 'yellow')">Yellow</button>
-        <button @click="setColor(member.id, 'red')">red</button>
-        <button @click="setColor(member.id, 'green')">green</button>
-        <button @click="removeTeamMember(member.id)">remove</button>
+      <h1 class="text-lg uppercase font-bold tracking-widest">Team {{ loadedTeam }}</h1>
+      <div class="mb-4 border-b pb-4">
+        <div v-for="member in teamMembers" :key="member">
+          <div class="flex items-center justify-between">
+            <div>
+              <p>{{ member.name }}</p>
+              <p>{{ member.color }}</p>
+            </div>
+            <div>
+              <button class="inline w-6 h-6 rounded-full bg-red-500" @click="setColor(member.id, 'red')"></button>
+              <button class="inline w-6 h-6 rounded-full bg-yellow-500" @click="setColor(member.id, 'yellow')"></button>
+              <button class="inline w-6 h-6 rounded-full bg-green-500" @click="setColor(member.id, 'green')"></button>
+            </div>
+          </div>
+          <button @click="removeTeamMember(member.id)">remove</button>
+        </div>
       </div>
-      <label for="add-team-member">Add Team Member</label>
-      <input type="text" id="add-team-member" v-model="newTeamMemberName" />
-      <button @click="addTeamMember">Add</button>
-      <button @click="disconnectFromTeam">Disconnect from Team</button>
-      <button @click="deleteTeam">Delete Team</button>
+      <fieldset class="flex flex-wrap items-center mb-4 pb-4 border-b">
+        <label class="w-full uppercase tracking-widest" for="add-team-member">Add Team Member</label>
+        <input type="text" id="add-team-member" v-model="newTeamMemberName" class="border flex-grow px-2 py-1 mr-1" />
+        <button @click="addTeamMember"
+          class="px-2 py-1 bg-blue-800 hover:bg-white text-white hover:text-blue-800 border border-blue-800 font-bold">Add</button>
+      </fieldset>
+      <div class="flex items-stretch">
+        <button @click="disconnectFromTeam"
+          class="w-full px-2 py-1 border border-slate-800 bg-slate-800 text-white hover:bg-white hover:text-slate-800 mr-1 font-bold">Disconnect</button>
+        <button @click="deleteTeam"
+          class="w-full px-2 py-1 border border-red-800 bg-red-800 text-white hover:bg-white hover:text-red-800 font-bold">Delete
+          Team</button>
+      </div>
     </div>
   </div>
 </template>
