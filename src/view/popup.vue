@@ -134,6 +134,10 @@ export default {
 </script>
 
 <style>
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 .main_app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
