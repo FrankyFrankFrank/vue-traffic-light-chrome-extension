@@ -36,12 +36,15 @@
           </div>
         </div>
       </div>
-      <fieldset class="flex flex-wrap items-center mb-4 pb-4 border-b">
-        <label class="w-full uppercase tracking-widest" for="add-team-member">Add Team Member</label>
-        <input type="text" id="add-team-member" v-model="newTeamMemberName" class="border flex-grow px-2 py-1 mr-1" />
-        <button @click="addTeamMember"
-          class="px-2 py-1 bg-blue-800 hover:bg-white text-white hover:text-blue-800 border border-blue-800 font-bold">Add</button>
-      </fieldset>
+      <form v-on:submit.prevent="addTeamMember">
+        <fieldset class="flex flex-wrap items-center mb-4 pb-4 border-b">
+          <label class="w-full uppercase tracking-widest" for="add-team-member">Add Team Member</label>
+          <input type="text" id="add-team-member" v-model="newTeamMemberName" class="border flex-grow px-2 py-1 mr-1" />
+          <input type="submit"
+            class="px-2 py-1 bg-blue-800 hover:bg-white text-white hover:text-blue-800 border border-blue-800 font-bold"
+            value="Add">
+        </fieldset>
+      </form>
       <div class="flex items-stretch">
         <button @click="disconnectFromTeam"
           class="w-full px-2 py-1 border border-slate-800 bg-slate-800 text-white hover:bg-white hover:text-slate-800 mr-1 font-bold">Disconnect</button>
@@ -144,7 +147,7 @@ export default {
       await addDoc(collection(this.db, "teams", this.loadedTeam, "members"), {
         name: this.newTeamMemberName
       })
-      this.teamName = null
+      this.newTeamMemberName = null
     },
     async removeTeamMember(memberId) {
       await deleteDoc(doc(this.db, "teams", this.loadedTeam, "members", memberId))
