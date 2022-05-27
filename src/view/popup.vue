@@ -23,15 +23,15 @@
                 class="invisible group-hover:visible text-xs border border-red-700 text-red-700 uppercase px-1 py-0.5 rounded">Remove</button>
             </div>
             <div>
-              <button class="inline w-6 h-6 mr-1 rounded-full bg-red-500"
-                :class="{ 'bg-red-500': member.color == 'red', 'shadow': member.color == 'red', 'shadow-red-500': member.color == 'red', 'bg-red-900': member.color != 'red' }"
-                @click="setColor(member.id, 'red')"></button>
-              <button class="inline w-6 h-6 mr-1 rounded-full bg-yellow-500"
-                :class="{ 'bg-yellow-500': member.color == 'yellow', 'shadow': member.color == 'yellow', 'shadow-yellow-500': member.color == 'yellow', 'bg-yellow-900': member.color != 'yellow' }"
-                @click="setColor(member.id, 'yellow')"></button>
               <button class="inline w-6 h-6 mr-1 rounded-full bg-green-500"
                 :class="{ 'bg-green-500': member.color == 'green', 'shadow': member.color == 'green', 'shadow-green-500': member.color == 'green', 'bg-green-900': member.color != 'green' }"
                 @click="setColor(member.id, 'green')"></button>
+              <button class="inline w-6 h-6 mr-1 rounded-full bg-yellow-500"
+                :class="{ 'bg-yellow-500': member.color == 'yellow', 'shadow': member.color == 'yellow', 'shadow-yellow-500': member.color == 'yellow', 'bg-yellow-900': member.color != 'yellow' }"
+                @click="setColor(member.id, 'yellow')"></button>
+              <button class="inline w-6 h-6 mr-1 rounded-full bg-red-500"
+                :class="{ 'bg-red-500': member.color == 'red', 'shadow': member.color == 'red', 'shadow-red-500': member.color == 'red', 'bg-red-900': member.color != 'red' }"
+                @click="setColor(member.id, 'red')"></button>
             </div>
           </div>
         </div>
