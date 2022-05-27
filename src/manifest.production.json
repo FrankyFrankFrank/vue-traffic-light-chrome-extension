@@ -2,7 +2,7 @@
     "manifest_version": 3,
     "name": "team-traffic-lights",
     "description": "Allows teams to share and update their traffic light status throughout the day",
-    "version": "0.0.1",
+    "version": "1.0.0",
     "action": {
         "default_popup": "popup.html"
     },
