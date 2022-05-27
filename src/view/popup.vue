@@ -1,6 +1,6 @@
 <template>
   <div class="main_app">
-    <h1>Hello {{ msg }}</h1>
+    <h1>Team {{ teamName }}</h1>
     <label for="team-name">Team Name</label>
     <input type="text" id="team-name" v-model="teamName">
     <button @click="foo">Get {{ teamName }}</button>
@@ -19,7 +19,6 @@ export default {
   name: 'popupView',
   data() {
     return {
-      msg: 'popup',
       teamName: null,
       teamMembers: [],
     }
@@ -49,7 +48,6 @@ export default {
         console.log(JSON.stringify(doc.data()))
         this.teamMembers.push(doc.data())
       })
-      // this.msg = this.teamMembers[0].name
     }
   }
 }
