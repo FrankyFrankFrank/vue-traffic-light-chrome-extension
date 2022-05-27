@@ -4,6 +4,7 @@
     <label for="team-name">Team Name</label>
     <input type="text" id="team-name" v-model="teamName">
     <button @click="foo">Get {{ teamName }}</button>
+    <p v-for="member in teamMembers" :key="member">{{ member }}</p>
   </div>
 </template>
 
@@ -17,6 +18,7 @@ export default {
     return {
       msg: 'popup',
       teamName: null,
+      teamMembers: [],
     }
   },
   methods: {
@@ -37,6 +39,7 @@ export default {
 
       const data = teamSnap.data()
       this.msg = data.names[0]
+      this.teamMembers = data.names
     }
   }
 }
