@@ -21,13 +21,14 @@
       <input type="text" id="add-team-member" v-model="newTeamMemberName" />
       <button @click="addTeamMember">Add</button>
       <button @click="disconnectFromTeam">Disconnect from Team</button>
+      <button @click="deleteTeam">Delete Team</button>
     </div>
   </div>
 </template>
 
 <script>
 import { initializeApp } from "firebase/app";
-import { getFirestore, collection, onSnapshot, doc, updateDoc, getDoc, addDoc, deleteDoc } from "firebase/firestore";
+import { getFirestore, collection, onSnapshot, doc, updateDoc, getDoc, addDoc, deleteDoc, getDocs } from "firebase/firestore";
 
 export default {
   name: 'popupView',
@@ -65,6 +66,18 @@ export default {
     async createTeam() {
       await addDoc(collection(this.db, "teams", this.teamName));
       this.loadTeam()
+    },
+    async deleteTeam() {
+      const membersRef = collection(this.db, "teams", this.loadedTeam, "members")
+      const memberSnapshot = await getDocs(membersRef)
+      memberSnapshot.forEach(async (member) => {
+        await deleteDoc(doc(this.db, "teams", this.loadedTeam, "members", member.id))
+      })
+
+      await deleteDoc(doc(this.db, "teams", this.loadedTeam))
+
+      this.loadedTeam = null
+      this.teamMembers = null
     },
     async loadTeam() {
       const teamRef = doc(this.db, "teams", this.teamName)
@@ -104,6 +117,7 @@ export default {
       await addDoc(collection(this.db, "teams", this.loadedTeam, "members"), {
         name: this.newTeamMemberName
       })
+      this.teamName = null
     },
     async removeTeamMember(memberId) {
       await deleteDoc(doc(this.db, "teams", this.loadedTeam, "members", memberId))
