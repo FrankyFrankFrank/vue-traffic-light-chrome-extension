@@ -4,11 +4,11 @@
       <h1 class="text-lg text-center uppercase font-bold tracking-widest">Find a team</h1>
 
       <label for="team-name" class="w-full uppercase tracking-widest">Team Name</label>
-      <input type="text" id="team-name" v-model="teamName" class="border w-full mb-2 px-2 py-1 mr-1" />
-      <button @click="loadTeam" :disabled="!teamName"
+      <input type="text" id="team-name" v-model="teamNameSearch" class="border w-full mb-2 px-2 py-1 mr-1" />
+      <button @click="loadTeam" :disabled="!teamNameSearch"
         class="w-full px-2 py-1 uppercase tracking-widest bg-blue-800 hover:bg-white text-white hover:text-blue-800 border border-blue-800 font-bold"
-        :class="{ 'opacity-20': !teamName, 'cursor-not-allowed': !teamName }">
-        {{ teamName ? `Join Team ${teamName}` : 'Enter Team Name' }}
+        :class="{ 'opacity-20': !teamNameSearch, 'cursor-not-allowed': !teamNameSearch }">
+        {{ teamNameSearch ? `Join Team ${teamNameSearch}` : 'Enter Team Name' }}
       </button>
     </div>
 
@@ -65,7 +65,7 @@ export default {
   data() {
     return {
       app: null,
-      teamName: null,
+      teamNameSearch: null,
       loadedTeam: null,
       teamMembers: [],
       newTeamMemberName: '',
@@ -88,13 +88,13 @@ export default {
     chrome.storage.sync.get(["loadedTeam"], (data) => {
       const loadedTeam = data.loadedTeam;
       if (!loadedTeam) return
-      this.teamName = loadedTeam
+      this.teamNameSearch = loadedTeam
       this.loadTeam()
     })
   },
   methods: {
     async createTeam() {
-      await addDoc(collection(this.db, "teams", this.teamName));
+      await addDoc(collection(this.db, "teams", this.teamNameSearch));
       this.loadTeam()
     },
     async deleteTeam() {
@@ -110,7 +110,7 @@ export default {
       this.teamMembers = null
     },
     async loadTeam() {
-      const teamRef = doc(this.db, "teams", this.teamName)
+      const teamRef = doc(this.db, "teams", this.teamNameSearch)
       const teamSnapshot = await getDoc(teamRef)
       if (!teamSnapshot.exists) {
         this.createTeam()
@@ -139,7 +139,7 @@ export default {
     disconnectFromTeam() {
       this.snapshotListenerUnsubscribe()
       this.loadedTeam = null
-      this.teamName = null
+      this.teamNameSearch = null
       this.teamMembers = []
       chrome.storage.sync.set({ loadedTeam: this.loadedTeam })
     },
