@@ -62,10 +62,15 @@ export default {
     })
   },
   methods: {
+    async createTeam() {
+      await addDoc(collection(this.db, "teams", this.teamName));
+      this.loadTeam()
+    },
     async loadTeam() {
       const teamRef = doc(this.db, "teams", this.teamName)
       const teamSnapshot = await getDoc(teamRef)
       if (!teamSnapshot.exists) {
+        this.createTeam()
         return
       }
       this.loadedTeam = teamSnapshot.id
