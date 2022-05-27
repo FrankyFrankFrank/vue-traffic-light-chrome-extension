@@ -13,7 +13,7 @@
 
 <script>
 import { initializeApp } from "firebase/app";
-import { getFirestore, getDocs, collection } from "firebase/firestore";
+import { getFirestore, collection, onSnapshot } from "firebase/firestore";
 
 export default {
   name: 'popupView',
@@ -37,16 +37,12 @@ export default {
       const app = initializeApp(firebaseConfig);
       const db = getFirestore(app);
       const membersRef = collection(db, "teams", this.teamName, "members")
-      const memberDocs = await getDocs(membersRef);
 
-      if (memberDocs.empty) {
-        console.log('WJAT?!')
-        return
-      }
-      memberDocs.forEach((doc) => {
-        console.log('foo')
-        console.log(JSON.stringify(doc.data()))
-        this.teamMembers.push(doc.data())
+      onSnapshot(membersRef, (memberSnapshot) => {
+        this.teamMembers = []
+        memberSnapshot.forEach((doc) => {
+          this.teamMembers.push(doc.data())
+        })
       })
     }
   }
