@@ -1,32 +1,39 @@
 <template>
   <div class="p-4 w-72">
     <div v-if="!loadedTeam">
-      <h1 class="text-lg uppercase font-bold tracking-widest">Find a team</h1>
+      <h1 class="text-lg text-center uppercase font-bold tracking-widest">Find a team</h1>
 
       <label for="team-name" class="w-full uppercase tracking-widest">Team Name</label>
       <input type="text" id="team-name" v-model="teamName" class="border w-full mb-2 px-2 py-1 mr-1" />
       <button @click="loadTeam" :disabled="!teamName"
-        class="w-full px-2 py-1 bg-stone-500 text-stone-100 uppercase tracking-widest font-bold">
+        class="w-full px-2 py-1 uppercase tracking-widest bg-blue-800 hover:bg-white text-white hover:text-blue-800 border border-blue-800 font-bold"
+        :class="{ 'opacity-20': !teamName, 'cursor-not-allowed': !teamName }">
         {{ teamName ? `Join Team ${teamName}` : 'Enter Team Name' }}
       </button>
     </div>
 
     <div v-if="loadedTeam">
-      <h1 class="text-lg uppercase font-bold tracking-widest">Team {{ loadedTeam }}</h1>
+      <h1 class="text-lg text-center uppercase font-bold tracking-widest mb-4">Team {{ loadedTeam }}</h1>
       <div class="mb-4 border-b pb-4">
-        <div v-for="member in teamMembers" :key="member">
+        <div v-for="member in teamMembers" :key="member" class="mb-2">
           <div class="flex items-center justify-between">
-            <div>
-              <p>{{ member.name }}</p>
-              <p>{{ member.color }}</p>
+            <div class="group flex flex-grow justify-between items-center mr-2">
+              <p class="uppercase">{{ member.name }}</p>
+              <button @click="removeTeamMember(member.id)"
+                class="invisible group-hover:visible text-xs border border-red-700 text-red-700 uppercase px-1 py-0.5 rounded">Remove</button>
             </div>
             <div>
-              <button class="inline w-6 h-6 rounded-full bg-red-500" @click="setColor(member.id, 'red')"></button>
-              <button class="inline w-6 h-6 rounded-full bg-yellow-500" @click="setColor(member.id, 'yellow')"></button>
-              <button class="inline w-6 h-6 rounded-full bg-green-500" @click="setColor(member.id, 'green')"></button>
+              <button class="inline w-6 h-6 mr-1 rounded-full bg-red-500"
+                :class="{ 'bg-red-500': member.color == 'red', 'shadow': member.color == 'red', 'shadow-red-500': member.color == 'red', 'bg-red-900': member.color != 'red' }"
+                @click="setColor(member.id, 'red')"></button>
+              <button class="inline w-6 h-6 mr-1 rounded-full bg-yellow-500"
+                :class="{ 'bg-yellow-500': member.color == 'yellow', 'shadow': member.color == 'yellow', 'shadow-yellow-500': member.color == 'yellow', 'bg-yellow-900': member.color != 'yellow' }"
+                @click="setColor(member.id, 'yellow')"></button>
+              <button class="inline w-6 h-6 mr-1 rounded-full bg-green-500"
+                :class="{ 'bg-green-500': member.color == 'green', 'shadow': member.color == 'green', 'shadow-green-500': member.color == 'green', 'bg-green-900': member.color != 'green' }"
+                @click="setColor(member.id, 'green')"></button>
             </div>
           </div>
-          <button @click="removeTeamMember(member.id)">remove</button>
         </div>
       </div>
       <fieldset class="flex flex-wrap items-center mb-4 pb-4 border-b">
@@ -148,6 +155,13 @@ export default {
       updateDoc(memberRef, {
         color
       })
+    },
+    getBgColor(color) {
+      return {
+        'bg-red-500': color == 'red',
+        'bg-yellow-500': color == 'yellow',
+        'bg-green-500': color == 'green',
+      }
     }
   }
 }
