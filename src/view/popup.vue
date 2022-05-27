@@ -53,6 +53,13 @@ export default {
     };
     this.app = initializeApp(firebaseConfig);
     this.db = getFirestore(this.app);
+
+    chrome.storage.sync.get(["loadedTeam"], (data) => {
+      const loadedTeam = data.loadedTeam;
+      if (!loadedTeam) return
+      this.teamName = loadedTeam
+      this.loadTeam()
+    })
   },
   methods: {
     async loadTeam() {
@@ -62,6 +69,9 @@ export default {
         return
       }
       this.loadedTeam = teamSnapshot.id
+
+      chrome.storage.sync.set({ loadedTeam: this.loadedTeam })
+
       const membersRef = collection(this.db, "teams", this.loadedTeam, "members")
 
       // Need to store the return value of the onSnapshot to use later to unsubscribe
@@ -81,7 +91,9 @@ export default {
     disconnectFromTeam() {
       this.snapshotListenerUnsubscribe()
       this.loadedTeam = null
+      this.teamName = null
       this.teamMembers = []
+      chrome.storage.sync.set({ loadedTeam: this.loadedTeam })
     },
     async addTeamMember() {
       await addDoc(collection(this.db, "teams", this.loadedTeam, "members"), {
