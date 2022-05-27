@@ -4,13 +4,16 @@
     <label for="team-name">Team Name</label>
     <input type="text" id="team-name" v-model="teamName">
     <button @click="foo">Get {{ teamName }}</button>
-    <p v-for="member in teamMembers" :key="member">{{ member }}</p>
+    <div v-for="member in teamMembers" :key="member">
+      <p>{{ member.name }}</p>
+      <p>{{ member.color }}</p>
+    </div>
   </div>
 </template>
 
 <script>
 import { initializeApp } from "firebase/app";
-import { getFirestore, getDoc, doc } from "firebase/firestore";
+import { getFirestore, getDocs, collection } from "firebase/firestore";
 
 export default {
   name: 'popupView',
@@ -34,12 +37,19 @@ export default {
       };
       const app = initializeApp(firebaseConfig);
       const db = getFirestore(app);
-      const teamRef = doc(db, "teams", this.teamName)
-      const teamSnap = await getDoc(teamRef);
+      const membersRef = collection(db, "teams", this.teamName, "members")
+      const memberDocs = await getDocs(membersRef);
 
-      const data = teamSnap.data()
-      this.msg = data.names[0]
-      this.teamMembers = data.names
+      if (memberDocs.empty) {
+        console.log('WJAT?!')
+        return
+      }
+      memberDocs.forEach((doc) => {
+        console.log('foo')
+        console.log(JSON.stringify(doc.data()))
+        this.teamMembers.push(doc.data())
+      })
+      // this.msg = this.teamMembers[0].name
     }
   }
 }
