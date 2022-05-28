@@ -51,6 +51,7 @@ import { ref, onMounted } from 'vue'
 import { initializeApp } from "firebase/app";
 import { getFirestore, collection, onSnapshot, doc, updateDoc, getDoc, addDoc, deleteDoc, getDocs } from "firebase/firestore";
 import TeamFinderVue from "@/components/TeamFinder.vue";
+import { useTeamStore } from '@/store/teamStore';
 
 const app = ref(null)
 const db = ref(null)
@@ -59,6 +60,8 @@ const loadedTeam = ref(null)
 const teamMembers = ref([])
 const newTeamMemberName = ref('')
 const snapshotListenerUnsubscribe = ref(() => { })
+
+const teamStore = useTeamStore()
 
 onMounted(() => {
   const firebaseConfig = {
@@ -72,6 +75,11 @@ onMounted(() => {
   };
   app.value = initializeApp(firebaseConfig);
   db.value = getFirestore(app.value);
+
+  console.log(teamStore.team)
+  teamStore.team++
+  console.log(teamStore.team)
+
 
   chrome.storage.sync.get(["loadedTeam"], (data) => {
     const loadedTeam = data.loadedTeam;

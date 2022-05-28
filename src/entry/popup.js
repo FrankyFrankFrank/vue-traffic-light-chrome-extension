@@ -1,4 +1,7 @@
 import { createApp } from 'vue'
+import { createPinia } from 'pinia'
 import App from '../view/popup.vue'
 
-createApp(App).mount('#app')
+createApp(App)
+    .use(createPinia())
+    .mount('#app')
