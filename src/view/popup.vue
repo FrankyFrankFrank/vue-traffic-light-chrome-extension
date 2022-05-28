@@ -1,16 +1,6 @@
 <template>
   <div class="p-4 w-72">
-    <div v-if="!loadedTeam">
-      <h1 class="text-lg text-center uppercase font-bold tracking-widest">Find a team</h1>
-
-      <label for="team-name" class="w-full uppercase tracking-widest">Team Name</label>
-      <input type="text" id="team-name" v-model="teamNameSearch" class="border w-full mb-2 px-2 py-1 mr-1" />
-      <button @click="loadTeam" :disabled="!teamNameSearch"
-        class="w-full px-2 py-1 uppercase tracking-widest bg-blue-800 hover:bg-white text-white hover:text-blue-800 border border-blue-800 font-bold"
-        :class="{ 'opacity-20': !teamNameSearch, 'cursor-not-allowed': !teamNameSearch }">
-        {{ teamNameSearch ? `Join Team ${teamNameSearch}` : 'Enter Team Name' }}
-      </button>
-    </div>
+    <TeamFinderVue v-if="!loadedTeam" :loadTeam="loadTeam" />
 
     <div v-if="loadedTeam">
       <h1 class="text-lg text-center uppercase font-bold tracking-widest mb-4">Team {{ loadedTeam }}</h1>
@@ -56,118 +46,113 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { ref, onMounted } from 'vue'
 import { initializeApp } from "firebase/app";
 import { getFirestore, collection, onSnapshot, doc, updateDoc, getDoc, addDoc, deleteDoc, getDocs } from "firebase/firestore";
+import TeamFinderVue from "@/components/TeamFinder.vue";
 
-export default {
-  name: 'popupView',
-  data() {
-    return {
-      app: null,
-      teamNameSearch: null,
-      loadedTeam: null,
-      teamMembers: [],
-      newTeamMemberName: '',
-      snapshotListenerUnsubscribe: () => { }
-    }
-  },
-  mounted() {
-    const firebaseConfig = {
-      apiKey: process.env.VUE_APP_APIKEY,
-      authDomain: process.env.VUE_APP_AUTHDOMAIN,
-      projectId: process.env.VUE_APP_PROJECTID,
-      storageBucket: process.env.VUE_APP_STORAGEBUCKET,
-      messagingSenderId: process.env.VUE_APP_MESSAGINGSENDERID,
-      appId: process.env.VUE_APP_APPID,
-      measurementId: process.env.VUE_APP_MEASUREMENTID,
-    };
-    this.app = initializeApp(firebaseConfig);
-    this.db = getFirestore(this.app);
+const app = ref(null)
+const db = ref(null)
+const teamNameSearch = ref(null)
+const loadedTeam = ref(null)
+const teamMembers = ref([])
+const newTeamMemberName = ref('')
+const snapshotListenerUnsubscribe = ref(() => { })
 
-    chrome.storage.sync.get(["loadedTeam"], (data) => {
-      const loadedTeam = data.loadedTeam;
-      if (!loadedTeam) return
-      this.teamNameSearch = loadedTeam
-      this.loadTeam()
-    })
-  },
-  methods: {
-    async createTeam() {
-      await addDoc(collection(this.db, "teams", this.teamNameSearch));
-      this.loadTeam()
-    },
-    async deleteTeam() {
-      const membersRef = collection(this.db, "teams", this.loadedTeam, "members")
-      const memberSnapshot = await getDocs(membersRef)
-      memberSnapshot.forEach(async (member) => {
-        await deleteDoc(doc(this.db, "teams", this.loadedTeam, "members", member.id))
-      })
+onMounted(() => {
+  const firebaseConfig = {
+    apiKey: process.env.VUE_APP_APIKEY,
+    authDomain: process.env.VUE_APP_AUTHDOMAIN,
+    projectId: process.env.VUE_APP_PROJECTID,
+    storageBucket: process.env.VUE_APP_STORAGEBUCKET,
+    messagingSenderId: process.env.VUE_APP_MESSAGINGSENDERID,
+    appId: process.env.VUE_APP_APPID,
+    measurementId: process.env.VUE_APP_MEASUREMENTID,
+  };
+  app.value = initializeApp(firebaseConfig);
+  db.value = getFirestore(app.value);
 
-      await deleteDoc(doc(this.db, "teams", this.loadedTeam))
+  chrome.storage.sync.get(["loadedTeam"], (data) => {
+    const loadedTeam = data.loadedTeam;
+    if (!loadedTeam) return
+    loadTeam(loadedTeam)
+  })
+})
 
-      this.loadedTeam = null
-      this.teamMembers = null
-    },
-    async loadTeam() {
-      const teamRef = doc(this.db, "teams", this.teamNameSearch)
-      const teamSnapshot = await getDoc(teamRef)
-      if (!teamSnapshot.exists) {
-        this.createTeam()
-        return
-      }
-      this.loadedTeam = teamSnapshot.id
+async function createTeam(teamName) {
+  await addDoc(collection(db.value, "teams", teamName));
+  loadTeam(teamName)
+}
 
-      chrome.storage.sync.set({ loadedTeam: this.loadedTeam })
+async function loadTeam(teamName) {
+  const teamRef = doc(db.value, "teams", teamName)
+  const teamSnapshot = await getDoc(teamRef)
+  if (!teamSnapshot.exists) {
+    createTeam(teamName)
+    return
+  }
+  loadedTeam.value = teamSnapshot.id
 
-      const membersRef = collection(this.db, "teams", this.loadedTeam, "members")
+  chrome.storage.sync.set({ loadedTeam: loadedTeam.value })
 
-      // Need to store the return value of the onSnapshot to use later to unsubscribe
-      this.snapshotListenerUnsubscribe = onSnapshot(membersRef, (memberSnapshot) => {
-        this.teamMembers = []
-        memberSnapshot.forEach((doc) => {
-          const { name, color } = doc.data()
-          const id = doc.id
-          this.teamMembers.push({
-            id,
-            name,
-            color
-          })
-        })
-      })
-    },
-    disconnectFromTeam() {
-      this.snapshotListenerUnsubscribe()
-      this.loadedTeam = null
-      this.teamNameSearch = null
-      this.teamMembers = []
-      chrome.storage.sync.set({ loadedTeam: this.loadedTeam })
-    },
-    async addTeamMember() {
-      await addDoc(collection(this.db, "teams", this.loadedTeam, "members"), {
-        name: this.newTeamMemberName
-      })
-      this.newTeamMemberName = null
-    },
-    async removeTeamMember(memberId) {
-      await deleteDoc(doc(this.db, "teams", this.loadedTeam, "members", memberId))
-    },
-    setColor(memberId, color) {
-      const memberRef = doc(this.db, "teams", this.loadedTeam, "members", memberId)
+  const membersRef = collection(db.value, "teams", loadedTeam.value, "members")
 
-      updateDoc(memberRef, {
+  // Need to store the return value of the onSnapshot to use later to unsubscribe
+  snapshotListenerUnsubscribe.value = onSnapshot(membersRef, (memberSnapshot) => {
+    teamMembers.value = []
+    memberSnapshot.forEach((doc) => {
+      const { name, color } = doc.data()
+      const id = doc.id
+      teamMembers.value.push({
+        id,
+        name,
         color
       })
-    },
-    getBgColor(color) {
-      return {
-        'bg-red-500': color == 'red',
-        'bg-yellow-500': color == 'yellow',
-        'bg-green-500': color == 'green',
-      }
-    }
-  }
+    })
+  })
 }
+
+async function deleteTeam() {
+  const membersRef = collection(db.value, "teams", loadedTeam.value, "members")
+  const memberSnapshot = await getDocs(membersRef)
+  memberSnapshot.forEach(async (member) => {
+    await deleteDoc(doc(db.value, "teams", loadedTeam.value, "members", member.id))
+  })
+
+  await deleteDoc(doc(db.value, "teams", loadedTeam.value))
+
+  loadedTeam.value = null
+  teamMembers.value = null
+}
+
+function disconnectFromTeam() {
+  snapshotListenerUnsubscribe.value()
+  loadedTeam.value = null
+  teamNameSearch.value = null
+  teamMembers.value = []
+  chrome.storage.sync.set({ loadedTeam: loadedTeam.value })
+}
+
+async function addTeamMember() {
+  await addDoc(collection(db.value, "teams", loadedTeam.value, "members"), {
+    name: newTeamMemberName.value
+  })
+  newTeamMemberName.value = null
+}
+
+async function removeTeamMember(memberId) {
+  await deleteDoc(doc(db.value, "teams", loadedTeam.value, "members", memberId))
+}
+
+function setColor(memberId, color) {
+  const memberRef = doc(db.value, "teams", loadedTeam.value, "members", memberId)
+
+  updateDoc(memberRef, {
+    color
+  })
+}
+
 </script>
 
 <style>
