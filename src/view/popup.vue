@@ -59,6 +59,7 @@ import { storeToRefs } from 'pinia'
 import { getFirestore, collection, onSnapshot, doc, updateDoc, getDoc, addDoc, deleteDoc, getDocs } from "firebase/firestore";
 import TeamFinderVue from "@/components/TeamFinder.vue";
 import { useTeamStore } from '@/store/teamStore';
+import { v4 as uuid } from 'uuid'
 
 const app = ref(null)
 const db = ref(null)
@@ -96,7 +97,7 @@ async function createTeam(teamName) {
 
 async function loadTeam(teamName) {
   if (!teamName) {
-    teamName = (Math.random() * 172913).toString();
+    teamName = btoa(uuid()).substring(0, 8);
   }
 
   const teamRef = doc(db.value, "teams", teamName)
