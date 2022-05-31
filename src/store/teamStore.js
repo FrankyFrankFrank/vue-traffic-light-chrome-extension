@@ -10,7 +10,8 @@ export const useTeamStore = defineStore('teamStore', {
         this.loadedTeam = id
       },
       setTeamMembers(memberSnapshot) {
-        this.teamMembers.value = []
+        this.teamMembers = []
+        
         memberSnapshot.forEach((doc) => {
           const { name, color } = doc.data()
           const id = doc.id
