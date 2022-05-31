@@ -95,6 +95,10 @@ async function createTeam(teamName) {
 }
 
 async function loadTeam(teamName) {
+  if (!teamName) {
+    teamName = (Math.random() * 172913).toString();
+  }
+
   const teamRef = doc(db.value, "teams", teamName)
   const teamSnapshot = await getDoc(teamRef)
   if (!teamSnapshot.exists) {
