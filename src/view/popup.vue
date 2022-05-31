@@ -25,6 +25,9 @@
               <button class="inline w-6 h-6 mr-1 rounded-full bg-red-500"
                 :class="{ 'bg-red-500': member.color == 'red', 'shadow': member.color == 'red', 'shadow-red-500': member.color == 'red', 'bg-red-900': member.color != 'red' }"
                 @click="setColor(member.id, 'red')"></button>
+              <button class="inline w-6 h-6 mr-1 rounded-full bg-gray-500"
+                :class="{ 'bg-gray-500': member.color == 'away', 'shadow': member.color == 'away', 'shadow-gray-500': member.color == 'away', 'bg-gray-900': member.color != 'away' }"
+                @click="setColor(member.id, 'away')"></button>
             </div>
           </div>
         </div>
