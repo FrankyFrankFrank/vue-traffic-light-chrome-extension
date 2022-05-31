@@ -3,7 +3,9 @@
     <TeamFinderVue v-if="!loadedTeam" :loadTeam="loadTeam" />
 
     <div v-if="loadedTeam">
-      <h1 class="text-lg text-center uppercase font-bold tracking-widest mb-4">Team {{ loadedTeam }}</h1>
+      <h1 class="text-lg text-center font-bold tracking-widest mb-4"><span class="text-slate-400">Team</span> {{
+          loadedTeam
+      }}</h1>
       <div class="mb-4 border-b pb-4">
         <div v-for="member in teamMembers" :key="member" class="mb-2">
           <div class="flex items-center justify-between">
