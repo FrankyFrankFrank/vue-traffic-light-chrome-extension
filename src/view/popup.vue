@@ -101,15 +101,15 @@ async function createTeam(teamName) {
   loadTeam(teamName)
 }
 
-async function loadTeam(teamName) {
-  if (!teamName) {
-    teamName = btoa(uuid()).substring(0, 8);
+async function loadTeam(teamDocId) {
+  if (!teamDocId) {
+    teamDocId = btoa(uuid()).substring(0, 8);
   }
 
-  const teamRef = doc(db.value, "teams", teamName)
+  const teamRef = doc(db.value, "teams", teamDocId)
   const teamSnapshot = await getDoc(teamRef)
   if (!teamSnapshot.exists) {
-    createTeam(teamName)
+    createTeam(teamDocId)
     return
   }
   teamStore.setLoadedTeam(teamSnapshot.id)
