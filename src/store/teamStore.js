@@ -4,6 +4,7 @@ export const useTeamStore = defineStore('teamStore', {
   state: () => ({
     loadedTeam: null,
     teamMembers: [],
+    snapshotListenerUnsubscribe: null,
   }),
   actions: {
       setLoadedTeam(id) {
@@ -21,6 +22,12 @@ export const useTeamStore = defineStore('teamStore', {
             color
           })
         })
+      },
+      disconnectFromTeam() {
+        this.snapshotListenerUnsubscribe()
+        this.loadedTeam = null
+        this.teamMembers = []
+        chrome.storage.sync.set({ loadedTeam: this.loadedTeam })
       }
   }
 })

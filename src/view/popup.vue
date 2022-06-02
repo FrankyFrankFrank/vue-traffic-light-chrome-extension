@@ -71,7 +71,6 @@ import { v4 as uuid } from 'uuid'
 const app = ref(null)
 const db = ref(null)
 const newTeamMemberName = ref('')
-const snapshotListenerUnsubscribe = ref(() => { })
 
 const teamStore = useTeamStore()
 const { loadedTeam, teamMembers } = storeToRefs(teamStore)
@@ -121,7 +120,7 @@ function storeTeamInChrome() {
 
 function watchForMemberChanges() {
   const membersRef = collection(db.value, "teams", loadedTeam.value, "members")
-  snapshotListenerUnsubscribe.value = onSnapshot(membersRef, teamStore.setTeamMembers)
+  teamStore.snapshotListenerUnsubscribe = onSnapshot(membersRef, teamStore.setTeamMembers)
 }
 
 async function deleteTeam() {
@@ -138,10 +137,7 @@ async function deleteTeam() {
 }
 
 function disconnectFromTeam() {
-  snapshotListenerUnsubscribe.value()
-  loadedTeam.value = null
-  teamStore.teamMembers = []
-  chrome.storage.sync.set({ loadedTeam: loadedTeam.value })
+  teamStore.disconnectFromTeam()
 }
 
 async function addTeamMember() {
