@@ -20,14 +20,6 @@ const props = defineProps({
     loadTeam: Function,
 })
 
-/*
-    CREATE TEAM
-        -> we need to generate a new "id", and create the entry in firebase  ...{ [id]: { name: 'team name', members: [] }}
-    ENTER CODE
-        [input box] button
-        -> click on the das button, we need to lookup id in firebase, if found, set and load team => "id", "team name"
-*/
-
 const teamNameSearch = ref('')
 
 const handleSubmit = () => {
