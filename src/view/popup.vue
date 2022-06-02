@@ -70,7 +70,6 @@ import { v4 as uuid } from 'uuid'
 
 const app = ref(null)
 const db = ref(null)
-const teamNameSearch = ref(null)
 const newTeamMemberName = ref('')
 const snapshotListenerUnsubscribe = ref(() => { })
 
@@ -139,7 +138,6 @@ async function deleteTeam() {
 function disconnectFromTeam() {
   snapshotListenerUnsubscribe.value()
   loadedTeam.value = null
-  teamNameSearch.value = null
   teamStore.teamMembers = []
   chrome.storage.sync.set({ loadedTeam: loadedTeam.value })
 }

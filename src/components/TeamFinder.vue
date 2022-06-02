@@ -23,13 +23,6 @@ const props = defineProps({
 const teamNameSearch = ref('')
 
 const handleSubmit = () => {
-    if (teamNameSearch.value === '') {
-        console.log('create team')
-        props.loadTeam()
-    } else {
-        console.log('load by code')
-        props.loadTeam(teamNameSearch.value)
-    }
-
+    props.loadTeam(teamNameSearch.value)
 }
 </script>
