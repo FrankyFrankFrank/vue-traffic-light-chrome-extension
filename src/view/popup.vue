@@ -1,6 +1,6 @@
 <template>
   <div class="p-4 w-72">
-    <TeamFinderVue v-if="!loadedTeam" :loadTeam="loadTeam" />
+    <TeamFinderVue v-if="!loadedTeam" :loadTeam="loadTeam" :createTeam="createTeam" />
 
     <div v-if="loadedTeam">
       <h1 class="text-lg text-center font-bold tracking-widest mb-4">
@@ -96,29 +96,29 @@ onMounted(() => {
   })
 })
 
-async function createTeam(teamName) {
-  await addDoc(collection(db.value, "teams", teamName));
-  loadTeam(teamName)
-}
-
-async function loadTeam(teamDocId) {
-  if (!teamDocId) {
-    teamDocId = btoa(uuid()).substring(0, 8);
-  }
-
+async function createTeam() {
+  const teamDocId = btoa(uuid()).substring(0, 8);
   const teamRef = doc(db.value, "teams", teamDocId)
   const teamSnapshot = await getDoc(teamRef)
-  if (!teamSnapshot.exists) {
-    createTeam(teamDocId)
-    return
-  }
   teamStore.setLoadedTeam(teamSnapshot.id)
 
   chrome.storage.sync.set({ loadedTeam: loadedTeam.value })
 
-  const membersRef = collection(db.value, "teams", loadedTeam.value, "members")
+  watchForMemberChanges()
+}
 
-  // Need to store the return value of the onSnapshot to use later to unsubscribe
+async function loadTeam(teamDocId) {
+  const teamRef = doc(db.value, "teams", teamDocId)
+  const teamSnapshot = await getDoc(teamRef)
+  teamStore.setLoadedTeam(teamSnapshot.id)
+
+  chrome.storage.sync.set({ loadedTeam: loadedTeam.value })
+
+  watchForMemberChanges()
+}
+
+function watchForMemberChanges() {
+  const membersRef = collection(db.value, "teams", loadedTeam.value, "members")
   snapshotListenerUnsubscribe.value = onSnapshot(membersRef, teamStore.setTeamMembers)
 }
 
