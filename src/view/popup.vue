@@ -102,8 +102,7 @@ async function createTeam() {
   const teamSnapshot = await getDoc(teamRef)
   teamStore.setLoadedTeam(teamSnapshot.id)
 
-  chrome.storage.sync.set({ loadedTeam: loadedTeam.value })
-
+  storeTeamInChrome()
   watchForMemberChanges()
 }
 
@@ -112,9 +111,12 @@ async function loadTeam(teamDocId) {
   const teamSnapshot = await getDoc(teamRef)
   teamStore.setLoadedTeam(teamSnapshot.id)
 
-  chrome.storage.sync.set({ loadedTeam: loadedTeam.value })
-
+  storeTeamInChrome()
   watchForMemberChanges()
+}
+
+function storeTeamInChrome() {
+  chrome.storage.sync.set({ loadedTeam: loadedTeam.value })
 }
 
 function watchForMemberChanges() {
