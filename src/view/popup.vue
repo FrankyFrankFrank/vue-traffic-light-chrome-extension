@@ -98,21 +98,21 @@ onMounted(() => {
 
 async function createTeam() {
   const teamDocId = btoa(uuid()).substring(0, 8);
-  const teamRef = doc(db.value, "teams", teamDocId)
-  const teamSnapshot = await getDoc(teamRef)
-  teamStore.setLoadedTeam(teamSnapshot.id)
-
+  await getTeamById(teamDocId)
   storeTeamInChrome()
   watchForMemberChanges()
 }
 
 async function loadTeam(teamDocId) {
-  const teamRef = doc(db.value, "teams", teamDocId)
-  const teamSnapshot = await getDoc(teamRef)
-  teamStore.setLoadedTeam(teamSnapshot.id)
-
+  await getTeamById(teamDocId);
   storeTeamInChrome()
   watchForMemberChanges()
+}
+
+async function getTeamById(teamDocId) {
+  const teamRef = doc(db.value, "teams", teamDocId);
+  const teamSnapshot = await getDoc(teamRef);
+  teamStore.setLoadedTeam(teamSnapshot.id);
 }
 
 function storeTeamInChrome() {
