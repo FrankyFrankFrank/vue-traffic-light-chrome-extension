@@ -61,33 +61,19 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import { initializeApp } from "firebase/app";
 import { storeToRefs } from 'pinia'
-import { getFirestore, collection, onSnapshot, doc, updateDoc, getDoc, addDoc, deleteDoc, getDocs } from "firebase/firestore";
+import { collection, onSnapshot, doc, updateDoc, getDoc, addDoc, deleteDoc, getDocs } from "firebase/firestore";
 import TeamFinderVue from "@/components/TeamFinder.vue";
 import { useTeamStore } from '@/store/teamStore';
 import { v4 as uuid } from 'uuid'
 
-const app = ref(null)
-const db = ref(null)
 const newTeamMemberName = ref('')
 
 const teamStore = useTeamStore()
 const { loadedTeam, teamMembers } = storeToRefs(teamStore)
+const { firebaseDB } = teamStore
 
 onMounted(() => {
-  const firebaseConfig = {
-    apiKey: process.env.VUE_APP_APIKEY,
-    authDomain: process.env.VUE_APP_AUTHDOMAIN,
-    projectId: process.env.VUE_APP_PROJECTID,
-    storageBucket: process.env.VUE_APP_STORAGEBUCKET,
-    messagingSenderId: process.env.VUE_APP_MESSAGINGSENDERID,
-    appId: process.env.VUE_APP_APPID,
-    measurementId: process.env.VUE_APP_MEASUREMENTID,
-  };
-  app.value = initializeApp(firebaseConfig);
-  db.value = getFirestore(app.value);
-
   chrome.storage.sync.get(["loadedTeam"], (data) => {
     const loadedTeam = data.loadedTeam;
     if (!loadedTeam) return
@@ -109,7 +95,7 @@ async function loadTeam(teamDocId) {
 }
 
 async function getTeamById(teamDocId) {
-  const teamRef = doc(db.value, "teams", teamDocId);
+  const teamRef = doc(firebaseDB, "teams", teamDocId);
   const teamSnapshot = await getDoc(teamRef);
   teamStore.setLoadedTeam(teamSnapshot.id);
 }
@@ -119,18 +105,18 @@ function storeTeamInChrome() {
 }
 
 function watchForMemberChanges() {
-  const membersRef = collection(db.value, "teams", loadedTeam.value, "members")
+  const membersRef = collection(firebaseDB, "teams", loadedTeam.value, "members")
   teamStore.snapshotListenerUnsubscribe = onSnapshot(membersRef, teamStore.setTeamMembers)
 }
 
 async function deleteTeam() {
-  const membersRef = collection(db.value, "teams", loadedTeam.value, "members")
+  const membersRef = collection(firebaseDB, "teams", loadedTeam.value, "members")
   const memberSnapshot = await getDocs(membersRef)
   memberSnapshot.forEach(async (member) => {
-    await deleteDoc(doc(db.value, "teams", loadedTeam.value, "members", member.id))
+    await deleteDoc(doc(firebaseDB, "teams", loadedTeam.value, "members", member.id))
   })
 
-  await deleteDoc(doc(db.value, "teams", loadedTeam.value))
+  await deleteDoc(doc(firebaseDB, "teams", loadedTeam.value))
 
   loadedTeam.value = null
   teamStore.teamMembers = null
@@ -141,18 +127,18 @@ function disconnectFromTeam() {
 }
 
 async function addTeamMember() {
-  await addDoc(collection(db.value, "teams", loadedTeam.value, "members"), {
+  await addDoc(collection(firebaseDB, "teams", loadedTeam.value, "members"), {
     name: newTeamMemberName.value
   })
   newTeamMemberName.value = null
 }
 
 async function removeTeamMember(memberId) {
-  await deleteDoc(doc(db.value, "teams", loadedTeam.value, "members", memberId))
+  await deleteDoc(doc(firebaseDB, "teams", loadedTeam.value, "members", memberId))
 }
 
 function setColor(memberId, color) {
-  const memberRef = doc(db.value, "teams", loadedTeam.value, "members", memberId)
+  const memberRef = doc(firebaseDB, "teams", loadedTeam.value, "members", memberId)
 
   updateDoc(memberRef, {
     color
