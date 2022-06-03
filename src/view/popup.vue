@@ -95,7 +95,7 @@ async function loadTeam(teamDocId) {
 }
 
 async function getTeamById(teamDocId) {
-  const teamRef = doc(firebaseDB, "teams", teamDocId);
+  const teamRef = getTeamRef(teamDocId);
   const teamSnapshot = await getDoc(teamRef);
   teamStore.setLoadedTeam(teamSnapshot.id);
 }
@@ -105,18 +105,18 @@ function storeTeamInChrome() {
 }
 
 function watchForMemberChanges() {
-  const membersRef = collection(firebaseDB, "teams", loadedTeam.value, "members")
+  const membersRef = getTeamMembersRef()
   teamStore.snapshotListenerUnsubscribe = onSnapshot(membersRef, teamStore.setTeamMembers)
 }
 
 async function deleteTeam() {
-  const membersRef = collection(firebaseDB, "teams", loadedTeam.value, "members")
+  const membersRef = getTeamMembersRef()
   const memberSnapshot = await getDocs(membersRef)
   memberSnapshot.forEach(async (member) => {
-    await deleteDoc(doc(firebaseDB, "teams", loadedTeam.value, "members", member.id))
+    await deleteDoc(getMemberRef(member.id))
   })
 
-  await deleteDoc(doc(firebaseDB, "teams", loadedTeam.value))
+  await deleteDoc(getTeamRef(loadedTeam.value))
 
   loadedTeam.value = null
   teamStore.teamMembers = null
@@ -126,19 +126,31 @@ function disconnectFromTeam() {
   teamStore.disconnectFromTeam()
 }
 
+function getTeamRef(teamDocId) {
+  return doc(firebaseDB, "teams", teamDocId)
+}
+
+function getMemberRef(memberId) {
+  return doc(firebaseDB, "teams", loadedTeam.value, "members", memberId)
+}
+
+function getTeamMembersRef() {
+  return collection(firebaseDB, "teams", loadedTeam.value, "members")
+}
+
 async function addTeamMember() {
-  await addDoc(collection(firebaseDB, "teams", loadedTeam.value, "members"), {
+  await addDoc(getTeamMembersRef(), {
     name: newTeamMemberName.value
   })
   newTeamMemberName.value = null
 }
 
 async function removeTeamMember(memberId) {
-  await deleteDoc(doc(firebaseDB, "teams", loadedTeam.value, "members", memberId))
+  await deleteDoc(getMemberRef(memberId))
 }
 
 function setColor(memberId, color) {
-  const memberRef = doc(firebaseDB, "teams", loadedTeam.value, "members", memberId)
+  const memberRef = getMemberRef(memberId)
 
   updateDoc(memberRef, {
     color
