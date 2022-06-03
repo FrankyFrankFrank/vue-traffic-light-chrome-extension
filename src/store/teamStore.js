@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import { doc, collection } from 'firebase/firestore'
 
 export const useTeamStore = defineStore('teamStore', {
   state: () => ({
@@ -28,6 +29,15 @@ export const useTeamStore = defineStore('teamStore', {
         this.loadedTeam = null
         this.teamMembers = []
         chrome.storage.sync.set({ loadedTeam: this.loadedTeam })
-      }
+      },
+      getTeamRef(teamDocId) {
+        return doc(this.firebaseDB, "teams", teamDocId)
+      },
+      getMemberRef(memberId) {
+        return doc(this.firebaseDB, "teams", this.loadedTeam, "members", memberId)
+      },
+      getTeamMembersRef() {
+        return collection(this.firebaseDB, "teams", this.loadedTeam, "members")
+      },
   }
 })

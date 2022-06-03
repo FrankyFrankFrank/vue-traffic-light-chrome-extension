@@ -62,7 +62,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { storeToRefs } from 'pinia'
-import { collection, onSnapshot, doc, updateDoc, getDoc, addDoc, deleteDoc, getDocs } from "firebase/firestore";
+import { onSnapshot, updateDoc, getDoc, addDoc, deleteDoc, getDocs } from "firebase/firestore";
 import TeamFinderVue from "@/components/TeamFinder.vue";
 import { useTeamStore } from '@/store/teamStore';
 import { v4 as uuid } from 'uuid'
@@ -71,7 +71,7 @@ const newTeamMemberName = ref('')
 
 const teamStore = useTeamStore()
 const { loadedTeam, teamMembers } = storeToRefs(teamStore)
-const { firebaseDB } = teamStore
+const { getTeamRef, getMemberRef, getTeamMembersRef } = teamStore
 
 onMounted(() => {
   chrome.storage.sync.get(["loadedTeam"], (data) => {
@@ -126,20 +126,9 @@ function disconnectFromTeam() {
   teamStore.disconnectFromTeam()
 }
 
-function getTeamRef(teamDocId) {
-  return doc(firebaseDB, "teams", teamDocId)
-}
-
-function getMemberRef(memberId) {
-  return doc(firebaseDB, "teams", loadedTeam.value, "members", memberId)
-}
-
-function getTeamMembersRef() {
-  return collection(firebaseDB, "teams", loadedTeam.value, "members")
-}
-
 async function addTeamMember() {
-  await addDoc(getTeamMembersRef(), {
+  const foo = teamStore.getTeamMembersRef()
+  await addDoc(foo, {
     name: newTeamMemberName.value
   })
   newTeamMemberName.value = null
