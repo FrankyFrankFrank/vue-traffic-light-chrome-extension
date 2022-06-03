@@ -16,19 +16,7 @@
       </h1>
       <div class="mb-4 border-b pb-4">
         <div v-for="member in teamMembers" :key="member" class="mb-2">
-          <div class="flex items-center justify-between">
-            <div class="group flex flex-grow justify-between items-center mr-2">
-              <p class="uppercase">{{ member.name }}</p>
-              <button @click="removeTeamMember(member.id)"
-                class="invisible group-hover:visible text-xs border border-red-700 text-red-700 uppercase px-1 py-0.5 rounded">Remove</button>
-            </div>
-            <div>
-              <TrafficLightButton :member="member" color="green"></TrafficLightButton>
-              <TrafficLightButton :member="member" color="yellow"></TrafficLightButton>
-              <TrafficLightButton :member="member" color="red"></TrafficLightButton>
-              <TrafficLightButton :member="member" color="away"></TrafficLightButton>
-            </div>
-          </div>
+          <MemberRow :member="member" />
         </div>
       </div>
       <form v-on:submit.prevent="addTeamMember">
@@ -58,7 +46,7 @@ import { addDoc, deleteDoc, getDocs } from "firebase/firestore";
 import { useTeamStore } from '@/store/teamStore';
 import { v4 as uuid } from 'uuid'
 import TeamFinderVue from "@/components/TeamFinder.vue";
-import TrafficLightButton from '@/components/TrafficLightButton.vue';
+import MemberRow from '@/components/MemberRow.vue';
 
 const newTeamMemberName = ref('')
 
@@ -110,10 +98,6 @@ async function addTeamMember() {
     name: newTeamMemberName.value
   })
   newTeamMemberName.value = null
-}
-
-async function removeTeamMember(memberId) {
-  await deleteDoc(getMemberRef(memberId))
 }
 
 function copyTeamNameToClipboard(teamName) {
