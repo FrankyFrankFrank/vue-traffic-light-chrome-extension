@@ -23,18 +23,10 @@
                 class="invisible group-hover:visible text-xs border border-red-700 text-red-700 uppercase px-1 py-0.5 rounded">Remove</button>
             </div>
             <div>
-              <button class="inline w-6 h-6 mr-1 rounded-full bg-green-500"
-                :class="{ 'bg-green-500': member.color == 'green', 'shadow': member.color == 'green', 'shadow-green-500': member.color == 'green', 'bg-green-900': member.color != 'green' }"
-                @click="setTeamMemberColor(member.id, 'green')"></button>
-              <button class="inline w-6 h-6 mr-1 rounded-full bg-yellow-500"
-                :class="{ 'bg-yellow-500': member.color == 'yellow', 'shadow': member.color == 'yellow', 'shadow-yellow-500': member.color == 'yellow', 'bg-yellow-900': member.color != 'yellow' }"
-                @click="setTeamMemberColor(member.id, 'yellow')"></button>
-              <button class="inline w-6 h-6 mr-1 rounded-full bg-red-500"
-                :class="{ 'bg-red-500': member.color == 'red', 'shadow': member.color == 'red', 'shadow-red-500': member.color == 'red', 'bg-red-900': member.color != 'red' }"
-                @click="setTeamMemberColor(member.id, 'red')"></button>
-              <button class="inline w-6 h-6 mr-1 rounded-full bg-gray-500"
-                :class="{ 'bg-gray-500': member.color == 'away', 'shadow': member.color == 'away', 'shadow-gray-500': member.color == 'away', 'bg-gray-900': member.color != 'away' }"
-                @click="setTeamMemberColor(member.id, 'away')"></button>
+              <TrafficLightButton :member="member" color="green"></TrafficLightButton>
+              <TrafficLightButton :member="member" color="yellow"></TrafficLightButton>
+              <TrafficLightButton :member="member" color="red"></TrafficLightButton>
+              <TrafficLightButton :member="member" color="away"></TrafficLightButton>
             </div>
           </div>
         </div>
@@ -63,15 +55,16 @@
 import { ref, onMounted } from 'vue'
 import { storeToRefs } from 'pinia'
 import { addDoc, deleteDoc, getDocs } from "firebase/firestore";
-import TeamFinderVue from "@/components/TeamFinder.vue";
 import { useTeamStore } from '@/store/teamStore';
 import { v4 as uuid } from 'uuid'
+import TeamFinderVue from "@/components/TeamFinder.vue";
+import TrafficLightButton from '@/components/TrafficLightButton.vue';
 
 const newTeamMemberName = ref('')
 
 const teamStore = useTeamStore()
 const { loadedTeam, teamMembers } = storeToRefs(teamStore)
-const { getTeamById, getTeamRef, getMemberRef, getTeamMembersRef, watchForMemberChanges, disconnectFromTeam, setTeamMemberColor } = teamStore
+const { getTeamById, getTeamRef, getMemberRef, getTeamMembersRef, watchForMemberChanges, disconnectFromTeam } = teamStore
 
 onMounted(() => {
   chrome.storage.sync.get(["loadedTeam"], (data) => {
