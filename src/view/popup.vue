@@ -39,6 +39,7 @@ import { useTeamStore } from '@/store/teamStore';
 import { v4 as uuid } from 'uuid'
 import TeamFinderVue from "@/components/TeamFinder.vue";
 import MemberRow from '@/components/MemberRow.vue';
+import AddTeamMemberForm from '@/components/AddTeamMemberForm.vue';
 
 const teamStore = useTeamStore()
 const { loadedTeam, teamMembers } = storeToRefs(teamStore)
