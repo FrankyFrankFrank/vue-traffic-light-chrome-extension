@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { doc, collection, onSnapshot, getDoc, updateDoc, deleteDoc } from 'firebase/firestore'
+import { doc, collection, onSnapshot, getDoc, addDoc, updateDoc, deleteDoc } from 'firebase/firestore'
 
 export const useTeamStore = defineStore('teamStore', {
   state: () => ({
@@ -25,6 +25,9 @@ export const useTeamStore = defineStore('teamStore', {
             color
           })
         })
+      },
+      async addTeamMember(name) {
+        await addDoc(this.getTeamMembersRef(), { name })
       },
       async removeTeamMember(memberId) {
         await deleteDoc(this.getMemberRef(memberId))

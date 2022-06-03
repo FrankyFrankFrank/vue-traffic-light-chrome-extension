@@ -19,15 +19,7 @@
           <MemberRow :member="member" />
         </div>
       </div>
-      <form v-on:submit.prevent="addTeamMember">
-        <fieldset class="flex flex-wrap items-center mb-4 pb-4 border-b">
-          <label class="w-full uppercase tracking-widest" for="add-team-member">Add Team Member</label>
-          <input type="text" id="add-team-member" v-model="newTeamMemberName" class="border flex-grow px-2 py-1 mr-1" />
-          <input type="submit"
-            class="px-2 py-1 bg-blue-800 hover:bg-white text-white hover:text-blue-800 border border-blue-800 font-bold"
-            value="Add">
-        </fieldset>
-      </form>
+      <AddTeamMemberForm />
       <div class="flex items-stretch">
         <button @click="disconnectFromTeam"
           class="w-full px-2 py-1 border border-slate-800 bg-slate-800 text-white hover:bg-white hover:text-slate-800 mr-1 font-bold">Disconnect</button>
@@ -40,15 +32,13 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { onMounted } from 'vue'
 import { storeToRefs } from 'pinia'
-import { addDoc, deleteDoc, getDocs } from "firebase/firestore";
+import { deleteDoc, getDocs } from "firebase/firestore";
 import { useTeamStore } from '@/store/teamStore';
 import { v4 as uuid } from 'uuid'
 import TeamFinderVue from "@/components/TeamFinder.vue";
 import MemberRow from '@/components/MemberRow.vue';
-
-const newTeamMemberName = ref('')
 
 const teamStore = useTeamStore()
 const { loadedTeam, teamMembers } = storeToRefs(teamStore)
@@ -90,14 +80,6 @@ async function deleteTeam() {
 
   loadedTeam.value = null
   teamStore.teamMembers = null
-}
-
-async function addTeamMember() {
-  const foo = teamStore.getTeamMembersRef()
-  await addDoc(foo, {
-    name: newTeamMemberName.value
-  })
-  newTeamMemberName.value = null
 }
 
 function copyTeamNameToClipboard(teamName) {
