@@ -71,7 +71,7 @@ const newTeamMemberName = ref('')
 
 const teamStore = useTeamStore()
 const { loadedTeam, teamMembers } = storeToRefs(teamStore)
-const { getTeamById, getTeamRef, getMemberRef, getTeamMembersRef, watchForMemberChanges } = teamStore
+const { getTeamById, getTeamRef, getMemberRef, getTeamMembersRef, watchForMemberChanges, disconnectFromTeam } = teamStore
 
 onMounted(() => {
   chrome.storage.sync.get(["loadedTeam"], (data) => {
@@ -109,10 +109,6 @@ async function deleteTeam() {
 
   loadedTeam.value = null
   teamStore.teamMembers = null
-}
-
-function disconnectFromTeam() {
-  teamStore.disconnectFromTeam()
 }
 
 async function addTeamMember() {
