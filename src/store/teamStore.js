@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { doc, collection, onSnapshot, getDoc } from 'firebase/firestore'
+import { doc, collection, onSnapshot, getDoc, updateDoc } from 'firebase/firestore'
 
 export const useTeamStore = defineStore('teamStore', {
   state: () => ({
@@ -29,6 +29,13 @@ export const useTeamStore = defineStore('teamStore', {
       watchForMemberChanges() {
         const membersRef = this.getTeamMembersRef()
         this.snapshotListenerUnsubscribe = onSnapshot(membersRef, this.setTeamMembers)
+      },
+      setTeamMemberColor(memberId, color) {
+        const memberRef = this.getMemberRef(memberId)
+
+        updateDoc(memberRef, {
+          color
+        })
       },
       disconnectFromTeam() {
         this.snapshotListenerUnsubscribe()
