@@ -15,15 +15,26 @@ function FirebasePlugin() {
         measurementId: process.env.VUE_APP_MEASUREMENTID,
     };
     const firebaseApp = initializeApp(firebaseConfig)
-    
+
     return {
         firebaseApp: markRaw(firebaseApp),
         firebaseDB: markRaw(getFirestore(firebaseApp)),
     }
 }
 
+function NotificationsPlugin({ store }) {
+    store.$state.permissionStatus = 'default'
+    store.askPermission = () => {
+        Notification.requestPermission()
+            .then(function (result) {
+                store.$state.permissionStatus = result
+            });
+    }
+}
+
 const pinia = createPinia()
 pinia.use(FirebasePlugin)
+pinia.use(NotificationsPlugin)
 
 createApp(App)
     .use(pinia)

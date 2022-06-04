@@ -15,7 +15,7 @@ export const useTeamStore = defineStore('teamStore', {
       },
       setTeamMembers(memberSnapshot) {
         this.teamMembers = []
-        
+
         memberSnapshot.forEach((doc) => {
           const { name, color } = doc.data()
           const id = doc.id
@@ -27,6 +27,7 @@ export const useTeamStore = defineStore('teamStore', {
         })
       },
       async addTeamMember(name) {
+        this.askPermission();
         await addDoc(this.getTeamMembersRef(), { name })
       },
       async removeTeamMember(memberId) {
