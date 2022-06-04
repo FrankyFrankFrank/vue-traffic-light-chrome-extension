@@ -27,11 +27,10 @@ export const useTeamStore = defineStore('teamStore', {
         })
       },
       async addTeamMember(name) {
-        if (this.permissionStatus === 'granted') {
-          this.makeNotification()
-        } else {
-          console.log(this.permissionStatus)
-        }
+        this.makeNotification({
+          title: "New Team Member",
+          body: `${name} was added to the team!`,
+        });
         await addDoc(this.getTeamMembersRef(), { name })
       },
       async removeTeamMember(memberId) {
