@@ -1,6 +1,5 @@
 <template>
   <div class="p-4 w-72">
-    <button @click="teamStore.askPermission()">Allow Notifications</button>
     <TeamFinderVue v-if="!loadedTeam" :loadTeam="loadTeam" :createTeam="createTeam" />
 
     <div v-if="loadedTeam">
@@ -29,6 +28,7 @@
           Team</button>
       </div>
     </div>
+    <NotificationsPermissionsButton />
   </div>
 </template>
 
@@ -41,6 +41,7 @@ import { v4 as uuid } from 'uuid'
 import TeamFinderVue from "@/components/TeamFinder.vue";
 import MemberRow from '@/components/MemberRow.vue';
 import AddTeamMemberForm from '@/components/AddTeamMemberForm.vue';
+import NotificationsPermissionsButton from '@/components/NotificationsPermissionsButton.vue';
 
 const teamStore = useTeamStore()
 const { loadedTeam, teamMembers } = storeToRefs(teamStore)
@@ -52,6 +53,7 @@ onMounted(() => {
     if (!loadedTeam) return
     loadTeam(loadedTeam)
   })
+  teamStore.askPermission()
 })
 
 async function createTeam() {
