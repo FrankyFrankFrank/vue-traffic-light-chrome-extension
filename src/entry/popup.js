@@ -1,4 +1,4 @@
-import { createApp, markRaw } from 'vue'
+import { createApp, markRaw, toRef } from 'vue'
 import { createPinia } from 'pinia'
 import { initializeApp } from 'firebase/app';
 import { getFirestore } from "firebase/firestore";
@@ -24,11 +24,21 @@ function FirebasePlugin() {
 
 function NotificationsPlugin({ store }) {
     store.$state.permissionStatus = 'default'
+    store.permissionStatus = toRef(store.$state, "permissionStatus");
     store.askPermission = () => {
         Notification.requestPermission()
             .then(function (result) {
                 store.$state.permissionStatus = result
+                console.log(store.$state.permissionStatus);
             });
+    }
+    store.makeNotification = () => {
+        var img = "/to-do-notifications/img/icon-128.png";
+        var text = 'HEY! Your task is now overdue.';
+        new Notification("To do list", {
+          body: text,
+          icon: img,
+        });
     }
 }
 

@@ -1,5 +1,6 @@
 <template>
   <div class="p-4 w-72">
+    <button @click="teamStore.askPermission()">Allow Notifications</button>
     <TeamFinderVue v-if="!loadedTeam" :loadTeam="loadTeam" :createTeam="createTeam" />
 
     <div v-if="loadedTeam">
