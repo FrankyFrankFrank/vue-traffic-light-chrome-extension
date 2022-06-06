@@ -21,6 +21,10 @@
       </div>
       <AddTeamMemberForm />
       <div class="flex items-stretch">
+        <button @click="disconnectFromTeam"
+          class="w-full px-2 py-1 border border-slate-800 bg-slate-800 text-white hover:bg-white hover:text-slate-800 mr-1 font-bold">
+          Disconnect
+        </button>
         <button @click="deleteTeam"
           class="w-full px-2 py-1 border border-red-800 bg-red-800 text-white hover:bg-white hover:text-red-800 font-bold">Delete
           Team</button>
@@ -44,7 +48,7 @@ import NotificationsPermissionsButton from '@/components/NotificationsPermission
 
 const teamStore = useTeamStore(piniaInstance)
 const { loadedTeam, teamMembers } = storeToRefs(teamStore)
-const { getTeamById, getTeamRef, getMemberRef, getTeamMembersRef, watchForMemberChanges } = teamStore
+const { getTeamById, getTeamRef, getMemberRef, getTeamMembersRef, watchForMemberChanges, disconnectFromTeam } = teamStore
 
 onMounted(() => {
   chrome.storage.sync.get(["loadedTeam"], (data) => {
