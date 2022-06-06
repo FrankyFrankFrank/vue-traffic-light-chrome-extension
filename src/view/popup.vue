@@ -71,6 +71,8 @@ async function loadTeam(teamDocId) {
 
 function storeTeamInChrome() {
   chrome.storage.sync.set({ loadedTeam: loadedTeam.value })
+  console.log(chrome.storage.sync.get(['loadedTeam']))
+
 }
 
 async function deleteTeam() {

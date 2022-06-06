@@ -1,19 +1,23 @@
 <template>
   <div class="main_app">
-    <h1>Hello {{msg}}</h1>
+    <h1>loadedTeam {{ teamId }}</h1>
+    <button @click="getTeam">Foo</button>
   </div>
 </template>
 
-<script>
-export default {
-  name: 'optionsView',
-  data () {
-    return {
-      msg: 'options'
-    }
-  }
-}
+<script setup>
+import { ref } from 'vue';
 
+let teamId = ref('')
+
+function getTeam() {
+  chrome.storage.sync.get(["loadedTeam"], (data) => {
+    console.log('foooooo', data)
+    const loadedTeam = data.loadedTeam;
+    if (!loadedTeam) return
+    teamId.value = loadedTeam
+  })
+}
 </script>
 
 <style>
