@@ -15,17 +15,29 @@ import { storeToRefs } from 'pinia'
 import { onMounted } from 'vue';
 
 const teamStore = useTeamStore(piniaInstance);
-const { disconnectFromTeam, getTeamById } = teamStore;
+const { disconnectFromTeam, getTeamById, watchForMemberChanges } = teamStore;
 const { loadedTeam } = storeToRefs(teamStore)
 
 onMounted(() => {
   chrome.storage.sync.get(["loadedTeam"], (data) => {
     const loadedTeam = data.loadedTeam;
     if (!loadedTeam) return
-    getTeamById(loadedTeam)
+    loadTeam(loadedTeam)
   })
   teamStore.askPermission()
 })
+
+async function loadTeam(teamDocId) {
+  await getTeamById(teamDocId);
+  storeTeamInChrome()
+  watchForMemberChanges()
+}
+
+function storeTeamInChrome() {
+  chrome.storage.sync.set({ loadedTeam: loadedTeam.value })
+  console.log(chrome.storage.sync.get(['loadedTeam']))
+
+}
 </script>
 
 <style>
