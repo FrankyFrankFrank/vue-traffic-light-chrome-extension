@@ -21,8 +21,6 @@
       </div>
       <AddTeamMemberForm />
       <div class="flex items-stretch">
-        <button @click="disconnectFromTeam"
-          class="w-full px-2 py-1 border border-slate-800 bg-slate-800 text-white hover:bg-white hover:text-slate-800 mr-1 font-bold">Disconnect</button>
         <button @click="deleteTeam"
           class="w-full px-2 py-1 border border-red-800 bg-red-800 text-white hover:bg-white hover:text-red-800 font-bold">Delete
           Team</button>
@@ -37,15 +35,16 @@ import { onMounted } from 'vue'
 import { storeToRefs } from 'pinia'
 import { deleteDoc, getDocs } from "firebase/firestore";
 import { useTeamStore } from '@/store/teamStore';
+import { piniaInstance } from '@/store';
 import { v4 as uuid } from 'uuid'
 import TeamFinderVue from "@/components/TeamFinder.vue";
 import MemberRow from '@/components/MemberRow.vue';
 import AddTeamMemberForm from '@/components/AddTeamMemberForm.vue';
 import NotificationsPermissionsButton from '@/components/NotificationsPermissionsButton.vue';
 
-const teamStore = useTeamStore()
+const teamStore = useTeamStore(piniaInstance)
 const { loadedTeam, teamMembers } = storeToRefs(teamStore)
-const { getTeamById, getTeamRef, getMemberRef, getTeamMembersRef, watchForMemberChanges, disconnectFromTeam } = teamStore
+const { getTeamById, getTeamRef, getMemberRef, getTeamMembersRef, watchForMemberChanges } = teamStore
 
 onMounted(() => {
   chrome.storage.sync.get(["loadedTeam"], (data) => {
