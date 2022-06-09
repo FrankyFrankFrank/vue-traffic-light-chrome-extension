@@ -23,7 +23,11 @@ const teamStore = useTeamStore(piniaInstance)
 const { loadedTeam } = storeToRefs(teamStore)
 
 function copyTeamNameToClipboard(teamName) {
-  navigator.clipboard.writeText(teamName);
+    navigator.clipboard.writeText(teamName);
+    teamStore.makeNotification({
+        title: "Hell ye.",
+        body: `Copied team id to your clipboard`,
+    });
 }
 
 </script>
