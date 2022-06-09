@@ -17,6 +17,7 @@ import { onMounted } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useTeamStore } from '@/store/teamStore';
 import { piniaInstance } from '@/store';
+import TopHeader from '@/components/TopHeader.vue';
 import TeamFinderVue from "@/components/TeamFinder.vue";
 import MemberList from "@/components/MemberList.vue";
 import AddTeamMemberForm from '@/components/AddTeamMemberForm.vue';
