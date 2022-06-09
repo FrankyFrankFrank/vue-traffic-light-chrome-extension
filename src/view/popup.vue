@@ -20,15 +20,7 @@
         </div>
       </div>
       <AddTeamMemberForm />
-      <div class="flex items-stretch">
-        <button @click="disconnectFromTeam"
-          class="w-full px-2 py-1 border border-slate-800 bg-slate-800 text-white hover:bg-white hover:text-slate-800 mr-1 font-bold">
-          Disconnect
-        </button>
-        <button @click="deleteTeam"
-          class="w-full px-2 py-1 border border-red-800 bg-red-800 text-white hover:bg-white hover:text-red-800 font-bold">Delete
-          Team</button>
-      </div>
+      <ManageLoadedTeam />
     </div>
     <NotificationsPermissionsButton />
   </div>
@@ -43,6 +35,7 @@ import TeamFinderVue from "@/components/TeamFinder.vue";
 import MemberRow from '@/components/MemberRow.vue';
 import AddTeamMemberForm from '@/components/AddTeamMemberForm.vue';
 import NotificationsPermissionsButton from '@/components/NotificationsPermissionsButton.vue';
+import ManageLoadedTeam from '@/components/ManageLoadedTeam.vue';
 
 const teamStore = useTeamStore(piniaInstance)
 const { loadedTeam, teamMembers } = storeToRefs(teamStore)
