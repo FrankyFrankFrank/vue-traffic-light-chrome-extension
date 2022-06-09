@@ -8,11 +8,7 @@
         {{ loadedTeam }}
         <CopyTeamIdButton />
       </h1>
-      <div class="mb-4 border-b pb-4">
-        <div v-for="member in teamMembers" :key="member" class="mb-2">
-          <MemberRow :member="member" />
-        </div>
-      </div>
+      <MemberList />
       <AddTeamMemberForm />
       <ManageLoadedTeam />
     </div>
@@ -26,14 +22,14 @@ import { storeToRefs } from 'pinia'
 import { useTeamStore } from '@/store/teamStore';
 import { piniaInstance } from '@/store';
 import TeamFinderVue from "@/components/TeamFinder.vue";
-import MemberRow from '@/components/MemberRow.vue';
+import MemberList from "@/components/MemberList.vue";
 import AddTeamMemberForm from '@/components/AddTeamMemberForm.vue';
 import NotificationsPermissionsButton from '@/components/NotificationsPermissionsButton.vue';
 import ManageLoadedTeam from '@/components/ManageLoadedTeam.vue';
 import CopyTeamIdButton from '../components/CopyTeamIdButton.vue';
 
 const teamStore = useTeamStore(piniaInstance)
-const { loadedTeam, teamMembers } = storeToRefs(teamStore)
+const { loadedTeam } = storeToRefs(teamStore)
 const {
   loadTeam,
 } = teamStore
