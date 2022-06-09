@@ -37,10 +37,8 @@
 <script setup>
 import { onMounted } from 'vue'
 import { storeToRefs } from 'pinia'
-import { deleteDoc, getDocs } from "firebase/firestore";
 import { useTeamStore } from '@/store/teamStore';
 import { piniaInstance } from '@/store';
-import { v4 as uuid } from 'uuid'
 import TeamFinderVue from "@/components/TeamFinder.vue";
 import MemberRow from '@/components/MemberRow.vue';
 import AddTeamMemberForm from '@/components/AddTeamMemberForm.vue';
@@ -48,7 +46,9 @@ import NotificationsPermissionsButton from '@/components/NotificationsPermission
 
 const teamStore = useTeamStore(piniaInstance)
 const { loadedTeam, teamMembers } = storeToRefs(teamStore)
-const { getTeamById, getTeamRef, getMemberRef, getTeamMembersRef, watchForMemberChanges, disconnectFromTeam } = teamStore
+const {
+  loadTeam,
+} = teamStore
 
 onMounted(() => {
   chrome.storage.sync.get(["loadedTeam"], (data) => {
@@ -59,37 +59,6 @@ onMounted(() => {
   teamStore.askPermission()
 })
 
-async function createTeam() {
-  const teamDocId = btoa(uuid()).substring(0, 8);
-  await getTeamById(teamDocId)
-  storeTeamInChrome()
-  watchForMemberChanges()
-}
-
-async function loadTeam(teamDocId) {
-  await getTeamById(teamDocId);
-  storeTeamInChrome()
-  watchForMemberChanges()
-}
-
-function storeTeamInChrome() {
-  chrome.storage.sync.set({ loadedTeam: loadedTeam.value })
-  console.log(chrome.storage.sync.get(['loadedTeam']))
-
-}
-
-async function deleteTeam() {
-  const membersRef = getTeamMembersRef()
-  const memberSnapshot = await getDocs(membersRef)
-  memberSnapshot.forEach(async (member) => {
-    await deleteDoc(getMemberRef(member.id))
-  })
-
-  await deleteDoc(getTeamRef(loadedTeam.value))
-
-  loadedTeam.value = null
-  teamStore.teamMembers = null
-}
 
 function copyTeamNameToClipboard(teamName) {
   navigator.clipboard.writeText(teamName);

@@ -1,5 +1,7 @@
 import { defineStore } from 'pinia'
-import { doc, collection, onSnapshot, getDoc, addDoc, updateDoc, deleteDoc } from 'firebase/firestore'
+import { doc, collection, onSnapshot, getDoc, addDoc, updateDoc, deleteDoc, getDocs } from 'firebase/firestore'
+import { v4 as uuid } from "uuid";
+
 
 export const useTeamStore = defineStore('teamStore', {
   state: () => ({
@@ -8,10 +10,27 @@ export const useTeamStore = defineStore('teamStore', {
     snapshotListenerUnsubscribe: null,
   }),
   actions: {
+      async loadTeam(teamDocId) {
+        await this.getTeamById(teamDocId)
+        this.storeTeamInChrome()
+        this.watchForMemberChanges()
+      },
       async getTeamById(teamDocId) {
-        const teamRef = this.getTeamRef(teamDocId);
-        const teamSnapshot = await getDoc(teamRef);
+        const teamRef = this.getTeamRef(teamDocId)
+        const teamSnapshot = await getDoc(teamRef)
         this.loadedTeam = teamSnapshot.id
+      },
+      async deleteTeam() {
+        const membersRef = this.getTeamMembersRef()
+        const memberSnapshot = await getDocs(membersRef)
+        memberSnapshot.forEach(async (member) => {
+          await deleteDoc(this.getMemberRef(member.id))
+        })
+
+        await deleteDoc(this.getTeamRef(this.loadedTeam))
+
+        this.loadedTeam = null
+        this.teamMembers = null
       },
       setTeamMembers(memberSnapshot) {
         this.teamMembers = []
@@ -25,6 +44,12 @@ export const useTeamStore = defineStore('teamStore', {
             color
           })
         })
+      },
+      async createTeam() {
+        const teamDocId = btoa(uuid()).substring(0, 8);
+        await this.getTeamById(teamDocId)
+        this.storeTeamInChrome()
+        this.watchForMemberChanges()
       },
       async addTeamMember(name) {
         this.makeNotification({
@@ -46,6 +71,9 @@ export const useTeamStore = defineStore('teamStore', {
         updateDoc(memberRef, {
           color
         })
+      },
+      storeTeamInChrome() {
+        chrome.storage.sync.set({ loadedTeam: this.loadedTeam })
       },
       disconnectFromTeam() {
         this.snapshotListenerUnsubscribe()
