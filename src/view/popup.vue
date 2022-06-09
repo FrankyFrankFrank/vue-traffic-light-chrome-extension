@@ -3,11 +3,7 @@
     <TeamFinderVue v-if="!loadedTeam" :loadTeam="loadTeam" :createTeam="createTeam" />
 
     <div v-if="loadedTeam">
-      <h1 class="text-lg text-center font-bold tracking-widest mb-4">
-        <span class="text-slate-400">Team</span>
-        {{ loadedTeam }}
-        <CopyTeamIdButton />
-      </h1>
+      <TopHeader />
       <MemberList />
       <AddTeamMemberForm />
       <ManageLoadedTeam />
@@ -26,7 +22,6 @@ import MemberList from "@/components/MemberList.vue";
 import AddTeamMemberForm from '@/components/AddTeamMemberForm.vue';
 import NotificationsPermissionsButton from '@/components/NotificationsPermissionsButton.vue';
 import ManageLoadedTeam from '@/components/ManageLoadedTeam.vue';
-import CopyTeamIdButton from '../components/CopyTeamIdButton.vue';
 
 const teamStore = useTeamStore(piniaInstance)
 const { loadedTeam } = storeToRefs(teamStore)
