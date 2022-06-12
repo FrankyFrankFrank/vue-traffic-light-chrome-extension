@@ -9,30 +9,25 @@
     "build-watch": "vue-cli-service  --env.NODE_ENV=development build-watch --mode development"
   },
   "dependencies": {
-    "core-js": "^3.8.3",
+    "@vitejs/plugin-vue": "^1.6.1",
     "firebase": "^9.8.1",
     "pinia": "^2.0.14",
     "uuid": "^8.3.2",
+    "vite": "^2.5.4",
     "vue": "^3.2.13"
   },
   "devDependencies": {
-    "@babel/core": "^7.12.16",
-    "@babel/eslint-parser": "^7.12.16",
-    "@vue/cli-plugin-babel": "~5.0.0",
-    "@vue/cli-plugin-eslint": "~5.0.0",
-    "@vue/cli-service": "~5.0.0",
     "autoprefixer": "^10.4.7",
-    "eslint": "^8.0.0",
-    "eslint-plugin-vue": "^8.0.3",
+    "eslint": "8",
+    "eslint-plugin-vue": "8",
     "postcss": "^8.4.14",
     "tailwindcss": "^3.0.24",
-    "vue-cli-plugin-chrome-extension-cli": "~1.1.4",
     "vue-eslint-parser": "^9.0.2"
   },
   "eslintConfig": {
     "root": true,
     "env": {
-      "node": true,
+      "es2021": true,
       "webextensions": true
     },
     "extends": [
@@ -40,11 +35,6 @@
       "plugin:vue/vue3-essential",
       "eslint:recommended"
     ],
-    "parser": "vue-eslint-parser",
-    "parserOptions": {
-      "ecmaVersion": "latest",
-      "sourceType": "module"
-    },
     "rules": {
       "vue/multi-word-component-names": 0
     }
