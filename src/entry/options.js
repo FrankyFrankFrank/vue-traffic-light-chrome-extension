@@ -1,4 +1,7 @@
+import { piniaInstance } from '@/store'
 import { createApp } from 'vue'
 import App from '../view/options.vue'
 
-createApp(App).mount('#app')
+const app = createApp(App)
+piniaInstance.install(app)
+app.mount('#app')
