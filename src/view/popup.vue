@@ -1,6 +1,6 @@
 <template>
   <div class="p-4 w-72">
-    <TeamFinderVue v-if="!loadedTeam" :loadTeam="loadTeam" :createTeam="createTeam" />
+    <TeamFinderVue v-if="!loadedTeam" />
 
     <div v-if="loadedTeam">
       <TopHeader />

@@ -5,8 +5,7 @@
         <label for="team-name" class="w-full uppercase tracking-widest">Enter Existing Team Code</label>
         <input type="text" id="team-name" v-model="teamDocId" class="border w-full mb-2 px-2 py-1 mr-1" />
         <button @click="handleLoadTeamSubmit"
-            class="w-full px-2 py-1 uppercase tracking-widest bg-blue-800 hover:bg-white text-white hover:text-blue-800 border border-blue-800 font-bold"
-        >
+            class="w-full px-2 py-1 uppercase tracking-widest bg-blue-800 hover:bg-white text-white hover:text-blue-800 border border-blue-800 font-bold">
             {{ teamDocId ? `Join Team ${teamDocId}` : 'Enter Team Name' }}
         </button>
         <p class="text-center">or</p>
@@ -19,19 +18,19 @@
 
 <script setup>
 import { ref } from 'vue';
+import { useTeamStore } from '@/store/teamStore';
+import { piniaInstance } from '@/store';
 
-const props = defineProps({
-    loadTeam: Function,
-    createTeam: Function,
-})
+const teamStore = useTeamStore(piniaInstance)
+const { loadTeam, createTeam } = teamStore
 
 const teamDocId = ref(null)
 
 const handleLoadTeamSubmit = () => {
-    props.loadTeam(teamDocId.value)
+    loadTeam(teamDocId.value)
 }
 
 const handleCreateTeamSubmit = () => {
-    props.createTeam()
+    createTeam()
 }
 </script>
