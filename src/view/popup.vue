@@ -1,5 +1,5 @@
 <template>
-  <div class="p-4 w-72">
+  <div class="p-4 w-72 bg-blue-400">
     <TeamFinderVue v-if="!loadedTeam" />
 
     <div v-if="loadedTeam">
@@ -44,9 +44,3 @@ onMounted(() => {
 })
 
 </script>
-
-<style>
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-</style>

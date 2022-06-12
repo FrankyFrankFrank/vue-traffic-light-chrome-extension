@@ -3,10 +3,12 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint",
-    "build-watch": "vue-cli-service  --env.NODE_ENV=development build-watch --mode development"
+    "lint": "eslint --ext .js,.vue --ignore-path .gitignore --fix src",
+    "dev": "vite",
+    "build": "vite build",
+    "serve": "vite preview",
+    "build-watch": "vue-cli-service build-watch --mode development",
+    "build-extension": "yarn build && cp src/manifest.production.json dist/manifest.json && cp src/entry/content.js dist/"
   },
   "dependencies": {
     "@vitejs/plugin-vue": "^1.6.1",
