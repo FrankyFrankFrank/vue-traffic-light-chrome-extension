@@ -6,7 +6,10 @@
       <TopHeader />
       <MemberList />
       <AddTeamMemberForm />
-      <ManageLoadedTeam />
+      <div class="flex items-stretch">
+        <DisconnectTeamButton />
+        <DeleteTeamButton />
+      </div>
     </div>
     <NotificationsPermissionsButton />
   </div>
@@ -22,7 +25,8 @@ import TeamFinderVue from "@/components/TeamFinder.vue";
 import MemberList from "@/components/MemberList.vue";
 import AddTeamMemberForm from '@/components/AddTeamMemberForm.vue';
 import NotificationsPermissionsButton from '@/components/NotificationsPermissionsButton.vue';
-import ManageLoadedTeam from '@/components/ManageLoadedTeam.vue';
+import DisconnectTeamButton from '@/components/DisconnectTeamButton.vue';
+import DeleteTeamButton from '@/components/DeleteTeamButton.vue';
 
 const teamStore = useTeamStore(piniaInstance)
 const { loadedTeam } = storeToRefs(teamStore)
